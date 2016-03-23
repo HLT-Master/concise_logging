@@ -15,6 +15,7 @@ module ConciseLogging
       params = payload[:params].except(*INTERNAL_PARAMS)
 
       ip = Thread.current[:logged_ip]
+      headers = Thread.current[:logged_headers]
       location = Thread.current[:logged_location]
       Thread.current[:logged_location] = nil
 
@@ -22,14 +23,15 @@ module ConciseLogging
       db = payload[:db_runtime].to_i
 
       message = format(
-        "%{method} %{status} %{ip} %{path}",
+        "%{method} %{status} %{ip} %{path} %{http_headers}",
         ip: format("%-15s", ip),
         method: format_method(format("%-6s", method)),
         status: format_status(status),
-        path: path
+        path: path,
+        http_headers: headers
       )
       message << " redirect_to=#{location}" if location.present?
-      message << " parameters=#{params}" if params.present?
+      message << " params=#{params}" if params.present?
       message << " #{color(exception_details, RED)}" if exception_details.present?
       message << " (app:#{app}ms db:#{db}ms)"
 
