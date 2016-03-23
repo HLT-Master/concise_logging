@@ -35,7 +35,7 @@ module ConciseLogging
       message << " #{color(exception_details, RED)}" if exception_details.present?
       message << " (app:#{app}ms db:#{db}ms)"
 
-      logger.warn message
+      logger.info message
     end
 
     def compute_status(payload)
