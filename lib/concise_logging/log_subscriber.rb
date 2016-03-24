@@ -23,14 +23,14 @@ module ConciseLogging
       db = payload[:db_runtime].to_i
 
       message = format(
-        "%{method} %{status} %{ip} %{path} %{http_headers}",
+        "%{method} %{status} %{ip} %{path}",
         ip: format("%-15s", ip),
         method: format_method(format("%-6s", method)),
         status: format_status(status),
-        path: path,
-        http_headers: headers
+        path: path
       )
       message << " redirect_to=#{location}" if location.present?
+      message << " http_headers=#{headers}" if headers.present?
       message << " params=#{params}" if params.present?
       message << " #{color(exception_details, RED)}" if exception_details.present?
       message << " (app:#{app}ms db:#{db}ms)"
